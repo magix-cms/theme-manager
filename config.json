@@ -1,0 +1,25 @@
+{
+  "name": "undefined",
+  "description": "Theme for Magix CMS",
+  "version": "1.0.0",
+  "keywords": [],
+  "authors": [],
+  "license": "MIT",
+  "style": "css/style.min.css",
+  "engines": {
+    "Magix CMS": ">=<%= mc_version%>"
+  },
+  "cssProcessor": "less",
+  "paths": {
+    "bowerDir": "./bower_components",
+    "skins": "../skin",
+    "themePath": {}
+  },
+  "plugins": {},
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "font-awesome": "fontawesome#^4.7.0",
+    "jquery": "^3.1.1",
+    "fancybox": "^2.1.6"
+  }
+}
