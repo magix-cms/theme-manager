@@ -8,10 +8,10 @@ Magix CMS - Theme Manager
 Requirements
 ------------
 
-[![Node version][node-image]]([node-url])
-[![NPM version][npm-image]]([npm-url])
-[![Bower version][bower-image]]([bower-url])
-[![Gulp version][gulp-image]]([gulp-url])
+[![Node version][node-image]][node-url]
+[![NPM version][npm-image]][npm-url]
+[![Bower version][bower-image]][bower-url]
+[![Gulp version][gulp-image]][gulp-url]
 
 Presentation
 ------------
