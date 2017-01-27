@@ -16,7 +16,7 @@
   "authors": [
     "Salvatore Di Salvo"
   ],
-  "license": "MIT",
+  "license": "GPL",
   "style": "css/style.min.css",
   "engines": {
     "Magix CMS": ">=<%= mc_version%>"
@@ -31,6 +31,7 @@
       "less": "/css/src/less",
       "scss": "/css/src/scss",
       "fonts": "/css/fonts",
+      "img": "/img",
       "vendorsSrc": "/js/vendor/src",
       "vendors": "/js/vendor",
       "jsSrc": "/js/src",

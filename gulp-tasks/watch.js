@@ -66,7 +66,7 @@ module.exports = function (gulp, runSeq, $, env, options) {
             type: 'confirm',
             name: 'confirm',
             message: 'Is it correct ?'
-        }, function(result) {
+        }).then(function(result) {
             if (result.confirm) {
                 env.config.name = options.name;
                 env.config.cssProcessor = options.cssProcessor;
@@ -150,7 +150,7 @@ module.exports = function (gulp, runSeq, $, env, options) {
                             type: 'confirm',
                             name: 'createSkin',
                             message: 'There is no theme called "' + result.name + '". Do you want to create it ?'
-                        }, function(result) {
+                        }).then(function(result) {
                             if (result.createSkin) {
                                 askConfig(cb)
                             }

@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "keywords": [],
   "authors": [],
-  "license": "MIT",
+  "license": "GPL",
   "style": "css/style.min.css",
   "engines": {
     "Magix CMS": ">=<%= mc_version%>"

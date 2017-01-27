@@ -16,7 +16,7 @@ module.exports = function (gulp, runSeq, $) {
                     type: 'confirm',
                     name: 'update',
                     message: 'Do you want to update the outdated packages ?'
-                }, function(result) {
+                }).then(function(result) {
                     if (result.update) {
                         ncu.run({
                             packageFile: 'package.json',
@@ -54,7 +54,7 @@ module.exports = function (gulp, runSeq, $) {
                     type: 'confirm',
                     name: 'update',
                     message: 'Do you want to update the outdated packages ?'
-                }, function(result) {
+                }).then(function(result) {
                     if (result.update) {
                         ncu.run({
                             packageFile: 'bower.json',

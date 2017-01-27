@@ -9,10 +9,10 @@
 function getConfig(theme) {
     var fs = require('fs');
     if(!theme || (theme && !fs.existsSync('./theme/' + theme))) {
-        this.config = JSON.parse(fs.readFileSync('./config.json'));
+        return JSON.parse(fs.readFileSync('./theme/default/config.json'));
     }
     else {
-        this.config = JSON.parse(fs.readFileSync('./theme/' + theme + '/config.json'));
+        return JSON.parse(fs.readFileSync('./theme/' + theme + '/config.json'));
     }
 }
 
@@ -20,20 +20,22 @@ function getConfig(theme) {
  * Display the current configuration load
  */
 function showConfig(cf) {
-    console.log(this.config);
+    console.log(cf);
 }
 
 /**
  * Overwrite the config of the theme
  *
- * @param theme
- * @param config
+ * @param {string} theme
+ * @param {object} config
+ * @param {function} cb
  */
-function setConfig(theme, config) {
+function setConfig(theme, config, cb) {
     var fs = require('fs');
     if(theme) {
+
         fs.writeFile('./theme/' + theme + '/config.json', JSON.stringify(config), 'utf8', function() {
-            this.config = JSON.parse(fs.readFileSync('./theme/' + theme + '/config.json'));
+            cb(JSON.parse(fs.readFileSync('./theme/' + theme + '/config.json')));
         });
     }
 }
@@ -41,12 +43,16 @@ function setConfig(theme, config) {
 module.exports = {
     config: {},
     getConfig: function (theme) {
-        getConfig(theme);
+        this.config = getConfig(theme);
     },
     showConfig: function () {
         showConfig(this.config);
     },
-    setConfig: function (theme, config) {
-        setConfig(theme, config)
+    setConfig: function (theme, config, cb) {
+        setConfig(theme, config, function(cf) {
+        	this.config = cf;
+			cb();
+		});
+
     }
 };

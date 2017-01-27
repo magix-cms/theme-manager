@@ -120,7 +120,7 @@ gulp.task('closing', function() {
  * - Check packages updates
  * - Closing (Never mind)
  */
-gulp.task('default', ['mcv'], function () {
+gulp.task('default', function () {
     var task_choices = [
         {
             type: "list",
@@ -147,6 +147,10 @@ gulp.task('default', ['mcv'], function () {
                 },
                 new $.inquirer.Separator(),
                 {
+                    name: "Check Magix Version",
+                    value: "mcv"
+                },
+                {
                     name: "Check packages updates",
                     value: "ncu"
                 },
@@ -157,8 +161,14 @@ gulp.task('default', ['mcv'], function () {
             ]
         }
     ];
-    $.inquirer.prompt(task_choices, function(result) {
-        runSeq(result.task);
+    $.inquirer.prompt(task_choices).then(function(result) {
+		// Check if bower is installed
+		if((result.task === 'watch' || result.task === 'build-skin') && !$.fs.existsSync('./bower_components')) {
+			runSeq('bower', result.task);
+		}
+		else {
+			runSeq(result.task);
+		}
     });
 });
 

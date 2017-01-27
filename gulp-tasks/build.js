@@ -8,7 +8,7 @@ module.exports = function (gulp, runSeq, $, env, options) {
         return gulp.src([
             env.config.paths.bowerDir + '/fancybox/dist/images/**/*.*'
         ])
-            .pipe(gulp.dest('./theme/' + env.config.name + '/img'));
+            .pipe(gulp.dest('./theme/' + env.config.name + env.config.paths.themePath.img));
     });
 
     /**
@@ -31,14 +31,14 @@ module.exports = function (gulp, runSeq, $, env, options) {
      */
     gulp.task('css-src', function () {
         gulp.src([env.config.paths.bowerDir + '/fancybox/dist/css/**.*'])
-            .pipe(gulp.dest('./theme/' + env.config.name + '/css/fancybox'));
+            .pipe(gulp.dest('./theme/' + env.config.name + env.config.paths.themePath.css + '/fancybox'));
 
         if(env.config.cssProcessor === 'less') {
             return gulp.src([
                 env.config.paths.bowerDir + '/bootstrap/less/**/**.*',
                 env.config.paths.bowerDir + '/font-awesome/less/**.*'
             ], { base: env.config.paths.bowerDir})
-                .pipe(gulp.dest('./theme/' + env.config.name + '/css/'));
+                .pipe(gulp.dest('./theme/' + env.config.name + env.config.paths.themePath.css + '/'));
         }
     });
 
@@ -62,12 +62,12 @@ module.exports = function (gulp, runSeq, $, env, options) {
      *
      * Create theme config file
      */
-    gulp.task('conf-skin', function () {
+    gulp.task('conf-skin', function (cb) {
         if (options.name !== undefined) {
             env.config.name = options.name;
             if (options.cssProcessor !== undefined) env.config.cssProcessor = options.cssProcessor;
 
-            env.setConfig(options.name, env.config);
+            env.setConfig(options.name, env.config, cb);
         }
     });
 
@@ -101,7 +101,7 @@ module.exports = function (gulp, runSeq, $, env, options) {
                     type: 'confirm',
                     name: 'startFW',
                     message: 'A theme called ' + options.name + 'already exist. Do you want to work on it ?'
-                }, function(result) {
+                }).then(function(result) {
                     if (result.startFW) {
                         env.getConfig(options.name);
                         runSeq('watch', cb);
@@ -124,7 +124,7 @@ module.exports = function (gulp, runSeq, $, env, options) {
             type: 'confirm',
             name: 'startFW',
             message: 'Start file watchers ?'
-        }, function(result) {
+        }).then(function(result) {
             if (result.startFW) {
                 runSeq('watch', cb);
             }
@@ -134,12 +134,45 @@ module.exports = function (gulp, runSeq, $, env, options) {
         });
     });
 
+	/**
+	 * Gulp task: comp-fancybox
+	 *
+	 * Compile fancybox to get dist files
+	 */
+	gulp.task('comp-fancybox', function (cb) {
+    	if(!$.fs.existsSync(env.config.paths.bowerDir + '/fancybox/dist')) {
+			var childProcess = require('child_process');
+			var cwd = process.cwd();
+
+			try {
+				process.chdir(cwd + '/bower_components/fancybox');
+			}
+			catch (err) {
+				console.log('chdir: ' + err);
+			}
+
+			// Run the `gulp` executable
+			var instll = childProcess.spawn('npm', ['install', '--save-dev'], {shell: true});
+
+			instll.on('error', function (err) { console.log(err); });
+
+			instll.on('close', function (code) {
+				var fb = childProcess.spawn('gulp', {shell: true});
+
+				fb.on('close', function (code) { cb(); });
+			});
+		}
+		else {
+    		cb();
+		}
+	});
+
     /**
      * Gulp task: import-src
      *
      * Import theme source files
      */
-    gulp.task('import-src', function (cb) {
+    gulp.task('import-src', ['comp-fancybox'], function (cb) {
         runSeq(['vendors', 'css-src', 'fonts', 'images'], 'askFW', cb);
     });
 
@@ -153,12 +186,12 @@ module.exports = function (gulp, runSeq, $, env, options) {
             type: 'confirm',
             name: 'confirm',
             message: 'Is it correct ?'
-        }, function(result) {
+        }).then(function(result) {
             if (result.confirm) {
                 runSeq('create-skin', 'conf-skin', 'import-src', cb);
             }
             else {
-                askConfig();
+                askConfig(cb);
             }
         });
     }
@@ -218,12 +251,9 @@ module.exports = function (gulp, runSeq, $, env, options) {
      * it propose to start the file watchers for this one
      */
     gulp.task('build-skin', function(cb) {
-        // Check if bower is installed
-        if(!$.fs.existsSync('./bower_components')) {
-            runSeq('bower');
-        }
-
-        if (env.config.name !== 'default') {
+        if (env.config.name !== 'default'
+			&& env.config.name !== 'undefined'
+			&& typeof env.config.name !== 'undefined') {
             options.name = env.config.name;
             options.cssProcessor = env.config.cssProcessor;
             runSeq('create-skin', 'conf-skin', 'import-src', cb);
