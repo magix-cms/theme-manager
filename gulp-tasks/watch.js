@@ -44,6 +44,10 @@ module.exports = function (gulp, runSeq, $, env, options) {
      *
      * File watcher for JS Vendors files
      */
+	gulp.task('watch-vendors', function () {
+		gulp.watch(workingdir.vendors + '/bootstrap/**/*.js', ['bootstrap-js']);
+		gulp.watch(workingdir.vendorsSrc + '/**/*.js', ['vendors']);
+	});
 
     /**
      * gulp Task: watch-js
@@ -53,57 +57,6 @@ module.exports = function (gulp, runSeq, $, env, options) {
     gulp.task('watch-js', function () {
         gulp.watch(workingdir.jsSrc + '/**/*.js', ['js']);
     });
-
-    /**
-     * Ask if the configuration options choosed are correct
-     *
-     * @param {stream|function} cb (callback)
-     */
-    function askConfirm(cb) {
-        console.log(options);
-
-        $.inquirer.prompt({
-            type: 'confirm',
-            name: 'confirm',
-            message: 'Is it correct ?'
-        }).then(function(result) {
-            if (result.confirm) {
-                env.config.name = options.name;
-                env.config.cssProcessor = options.cssProcessor;
-                runSeq('build-skin', cb);
-            }
-            else {
-                askConfig(cb);
-            }
-        });
-    }
-
-    /**
-     * Ask theme configuration when creating new theme
-     *
-     * @param {stream|function} cb (callback)
-     */
-    function askConfig(cb) {
-        var thconf = {
-            properties: {
-                cssProcessor: {
-                    description: 'Enter the css pre-processor you would like to use for this project [less|sass]',
-                    type: 'string',
-                    pattern: /(less|sass)/,
-                    default: 'less',
-                    message: 'The css pre-processor must be less or sass',
-                    required: true
-                }
-            }
-        };
-
-        $.prompt.get(thconf, function (err, result) {
-            if(!err) {
-                options.cssProcessor = result.cssProcessor;
-                askConfirm(cb);
-            }
-        });
-    }
 
     // --- All Watchers
     /**
@@ -115,11 +68,6 @@ module.exports = function (gulp, runSeq, $, env, options) {
      * it propose to create it
      */
     gulp.task('watch', function (cb) {
-        // Check if bower is installed
-        if(!$.fs.existsSync('./bower_components')) {
-            runSeq('bower');
-        }
-
         if(env.config.name !== 'default') {
             setWorkingDir();
             runSeq(['watch-css', 'watch-vendors', 'watch-js']);

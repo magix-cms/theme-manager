@@ -17,6 +17,7 @@ var gulp = require('gulp'),
     $.inquirer = require('inquirer');
     $.cheerio = require('cheerio');
     $.dir = require('./gulp-tasks/assets/folder');
+    $.callGulp = require('./gulp-tasks/assets/subgulp');
 
 /**
  * Get configuration
@@ -51,6 +52,48 @@ gulp.task('bower', function() {
  */
 gulp.task('config', function () {
     env.showConfig();
+});
+
+/**
+ * Gulp task: init
+ *
+ * Start a theme gulpfile
+ */
+gulp.task('init', function (cb) {
+	var thconf = {
+		properties: {
+			name: {
+				description: 'Enter the name of the theme you\'d like to work on',
+				type: 'string',
+				pattern: /(?!default)/,
+				message: 'Name must be only letters and numbers and different than "default"',
+				required: true
+			}
+		}
+	};
+
+	$.prompt.get(thconf, function (err, result) {
+		if(!err) {
+			if($.dir.dirExist('./theme/' + result.name) && $.dir.dirExist('../skin/' + result.name)) {
+				$.callGulp(process, '/theme/' + result.name, cb);
+			}
+			else {
+				options.name = result.name;
+				$.inquirer.prompt({
+					type: 'confirm',
+					name: 'createSkin',
+					message: 'There is no theme called "' + result.name + '". Do you want to create it ?'
+				}).then(function(result) {
+					if (result.createSkin) {
+						askConfig(cb)
+					}
+					else {
+						cb();
+					}
+				});
+			}
+		}
+	});
 });
 
 /**
@@ -111,12 +154,13 @@ gulp.task('closing', function() {
 /**
  * Default Gulp task
  *
- * Check the version of Magix CMS
- *
  * Ask for user what he want to do between:
- * - Work on a skin
  * - Create a new skin
+ * - Copy a skin
+ * - Install a skin
+ * - Work on a skin
  * - Install a Magix plugin
+ * - Check the version of Magix CMS
  * - Check packages updates
  * - Closing (Never mind)
  */
@@ -128,28 +172,32 @@ gulp.task('default', function () {
             message: "What do you want to do ?",
             choices: [
                 {
-                    name: "Work on a skin (launch file watchers)",
-                    value: "watch"
-                },
-                new $.inquirer.Separator(),
-                {
                     name: "Create a new skin",
                     value: "build-skin"
                 },
-                /*{
-                 name: "Copy a skin",
-                 disabled: 'Unavailable at this time'
-                 },*/
+				new $.inquirer.Separator(),
+				/*{
+				 name: "Copy a skin",
+				 disabled: 'Unavailable at this time'
+				 },*/
+				/*{
+				 name: "Install a skin",
+				 disabled: 'Unavailable at this time'
+				 },*/
+				{
+					name: "Work on a skin",
+					value: "init"
+				},
                 new $.inquirer.Separator(),
+				{
+					name: "Check Magix Version",
+					value: "mcv"
+				},
                 {
                     name: "Install a Magix plugin",
                     value: "install-plugin"
                 },
                 new $.inquirer.Separator(),
-                {
-                    name: "Check Magix Version",
-                    value: "mcv"
-                },
                 {
                     name: "Check packages updates",
                     value: "ncu"

@@ -26,16 +26,16 @@
     "bowerDir": "./bower_components",
     "skins": "../skin",
     "themePath": {
-      "css": "/css",
-      "cssSrc": "/css/src",
-      "less": "/css/src/less",
-      "scss": "/css/src/scss",
-      "fonts": "/css/fonts",
-      "img": "/img",
-      "vendorsSrc": "/js/vendor/src",
-      "vendors": "/js/vendor",
-      "jsSrc": "/js/src",
-      "js": "/js"
+      "css": "css",
+      "cssSrc": "css/src",
+      "less": "css/src/less",
+      "scss": "css/src/scss",
+      "fonts": "css/fonts",
+      "img": "img",
+      "vendorsSrc": "js/vendor/src",
+      "vendors": "js/vendor",
+      "jsSrc": "js/src",
+      "js": "js"
     }
   },
   "plugins": {},

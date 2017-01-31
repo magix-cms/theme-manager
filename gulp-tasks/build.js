@@ -8,7 +8,7 @@ module.exports = function (gulp, runSeq, $, env, options) {
         return gulp.src([
             env.config.paths.bowerDir + '/fancybox/dist/images/**/*.*'
         ])
-            .pipe(gulp.dest('./theme/' + env.config.name + env.config.paths.themePath.img));
+            .pipe(gulp.dest('./theme/' + env.config.name + '/' + env.config.paths.themePath.img));
     });
 
     /**
@@ -31,14 +31,14 @@ module.exports = function (gulp, runSeq, $, env, options) {
      */
     gulp.task('css-src', function () {
         gulp.src([env.config.paths.bowerDir + '/fancybox/dist/css/**.*'])
-            .pipe(gulp.dest('./theme/' + env.config.name + env.config.paths.themePath.css + '/fancybox'));
+            .pipe(gulp.dest('./theme/' + env.config.name + '/' + env.config.paths.themePath.css + '/fancybox'));
 
         if(env.config.cssProcessor === 'less') {
             return gulp.src([
                 env.config.paths.bowerDir + '/bootstrap/less/**/**.*',
                 env.config.paths.bowerDir + '/font-awesome/less/**.*'
             ], { base: env.config.paths.bowerDir})
-                .pipe(gulp.dest('./theme/' + env.config.name + env.config.paths.themePath.css + '/'));
+                .pipe(gulp.dest('./theme/' + env.config.name + '/' + env.config.paths.themePath.css + '/'));
         }
     });
 
@@ -141,7 +141,7 @@ module.exports = function (gulp, runSeq, $, env, options) {
 	 */
 	gulp.task('comp-fancybox', function (cb) {
     	if(!$.fs.existsSync(env.config.paths.bowerDir + '/fancybox/dist')) {
-			var childProcess = require('child_process');
+			/*var childProcess = require('child_process');
 			var cwd = process.cwd();
 
 			try {
@@ -160,7 +160,9 @@ module.exports = function (gulp, runSeq, $, env, options) {
 				var fb = childProcess.spawn('gulp', {shell: true});
 
 				fb.on('close', function (code) { cb(); });
-			});
+			});*/
+
+			$.callGulp(process, '/bower_components/fancybox', cb)
 		}
 		else {
     		cb();
