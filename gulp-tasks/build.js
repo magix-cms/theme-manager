@@ -1,4 +1,5 @@
 module.exports = function (gulp, runSeq, $, env, options) {
+
     /**
      * Gulp task: images
      *
@@ -8,7 +9,7 @@ module.exports = function (gulp, runSeq, $, env, options) {
         return gulp.src([
             env.config.paths.bowerDir + '/fancybox/dist/images/**/*.*'
         ])
-            .pipe(gulp.dest('./theme/' + env.config.name + '/' + env.config.paths.themePath.img));
+            .pipe(gulp.dest(env.workingDir.img));
     });
 
     /**
@@ -21,7 +22,7 @@ module.exports = function (gulp, runSeq, $, env, options) {
             env.config.paths.bowerDir + '/bootstrap/fonts/**.*',
             env.config.paths.bowerDir + '/font-awesome/fonts/**.*'
         ])
-            .pipe(gulp.dest('./theme/' + env.config.name + '/css/fonts'));
+            .pipe(gulp.dest(env.workingDir.css + '/fonts'));
     });
 
     /**
@@ -31,14 +32,14 @@ module.exports = function (gulp, runSeq, $, env, options) {
      */
     gulp.task('css-src', function () {
         gulp.src([env.config.paths.bowerDir + '/fancybox/dist/css/**.*'])
-            .pipe(gulp.dest('./theme/' + env.config.name + '/' + env.config.paths.themePath.css + '/fancybox'));
+            .pipe(gulp.dest(env.workingDir.css + '/fancybox'));
 
         if(env.config.cssProcessor === 'less') {
             return gulp.src([
                 env.config.paths.bowerDir + '/bootstrap/less/**/**.*',
                 env.config.paths.bowerDir + '/font-awesome/less/**.*'
             ], { base: env.config.paths.bowerDir})
-                .pipe(gulp.dest('./theme/' + env.config.name + '/' + env.config.paths.themePath.css + '/'));
+                .pipe(gulp.dest(env.workingDir.css + '/'));
         }
     });
 
@@ -52,9 +53,9 @@ module.exports = function (gulp, runSeq, $, env, options) {
             env.config.paths.bowerDir + '/jquery/dist/jquery.min.js',
             env.config.paths.bowerDir + '/fancybox/dist/js/**.*'
         ])
-            .pipe(gulp.dest('./theme/' + env.config.name + '/js/vendors'));
+            .pipe(gulp.dest(env.workingDir.js + '/vendors'));
         return gulp.src([env.config.paths.bowerDir + '/bootstrap/js/**.*'])
-            .pipe(gulp.dest('./theme/' + env.config.name + '/js/vendors/bootstrap'));
+            .pipe(gulp.dest(env.workingDir.js + '/vendors/bootstrap'));
     });
 
     /**
@@ -67,7 +68,9 @@ module.exports = function (gulp, runSeq, $, env, options) {
             env.config.name = options.name;
             if (options.cssProcessor !== undefined) env.config.cssProcessor = options.cssProcessor;
 
-            env.setConfig(options.name, env.config, cb);
+            env.setConfig(options.name, env.config, function () {
+				env.setWorkingDir(cb);
+			});
         }
     });
 

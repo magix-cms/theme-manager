@@ -105,6 +105,15 @@ gulp.task('config', function () {
 });
 
 /**
+ * Gulp task: closing
+ *
+ * End process
+ */
+gulp.task('closing', function() {
+	return null;
+});
+
+/**
  * Default Gulp task
  *
  * Ask for user what he want to do between:
@@ -112,7 +121,7 @@ gulp.task('config', function () {
  * - Update version
  * - Never mind
  */
-gulp.task('default', function () {
+gulp.task('default', function (cb) {
 	var task_choices = [
 		{
 			type: "list",
@@ -138,6 +147,6 @@ gulp.task('default', function () {
 	];
 	$.inquirer.prompt(task_choices).then(function(result) {
 		// Check if bower is installed
-		runSeq(result.task);
+		runSeq(result.task, cb);
 	});
 });

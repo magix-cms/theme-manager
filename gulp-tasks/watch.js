@@ -1,14 +1,5 @@
 module.exports = function (gulp, runSeq, $, env, options) {
-    var workingdir = {}; // will be completed by the setWorkingDir function
-
-    /**
-     * Set paths relative to the theme directory
-     */
-    function setWorkingDir() {
-        Object.keys(env.config.paths.themePath).map(function(k, i) {
-            workingdir[k] = './theme/' + env.config.name + env.config.paths.themePath[k];
-        });
-    }
+	env.setWorkingDir();
 
     /**
      * gulp Task: watch-css
@@ -19,7 +10,7 @@ module.exports = function (gulp, runSeq, $, env, options) {
         if(env.config.cssProcessor === 'less'
             || env.config.cssProcessor === 'scss')
         {
-            var srcPath = workingdir.cssSrc + '/' + env.config.cssProcessor;
+            var srcPath = env.workingDir.cssSrc + '/' + env.config.cssProcessor;
             gulp.watch([
                 srcPath + '/style.' + env.config.cssProcessor,
                 srcPath + '/**/*.' + env.config.cssProcessor,
@@ -45,8 +36,8 @@ module.exports = function (gulp, runSeq, $, env, options) {
      * File watcher for JS Vendors files
      */
 	gulp.task('watch-vendors', function () {
-		gulp.watch(workingdir.vendors + '/bootstrap/**/*.js', ['bootstrap-js']);
-		gulp.watch(workingdir.vendorsSrc + '/**/*.js', ['vendors']);
+		gulp.watch(env.workingDir.vendors + '/bootstrap/**/*.js', ['bootstrap-js']);
+		gulp.watch(env.workingDir.vendorsSrc + '/**/*.js', ['vendors']);
 	});
 
     /**
@@ -55,7 +46,7 @@ module.exports = function (gulp, runSeq, $, env, options) {
      * File watcher for JS files
      */
     gulp.task('watch-js', function () {
-        gulp.watch(workingdir.jsSrc + '/**/*.js', ['js']);
+        gulp.watch(env.workingDir.jsSrc + '/**/*.js', ['js']);
     });
 
     // --- All Watchers

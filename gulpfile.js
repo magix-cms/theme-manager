@@ -55,48 +55,6 @@ gulp.task('config', function () {
 });
 
 /**
- * Gulp task: init
- *
- * Start a theme gulpfile
- */
-gulp.task('init', function (cb) {
-	var thconf = {
-		properties: {
-			name: {
-				description: 'Enter the name of the theme you\'d like to work on',
-				type: 'string',
-				pattern: /(?!default)/,
-				message: 'Name must be only letters and numbers and different than "default"',
-				required: true
-			}
-		}
-	};
-
-	$.prompt.get(thconf, function (err, result) {
-		if(!err) {
-			if($.dir.dirExist('./theme/' + result.name) && $.dir.dirExist('../skin/' + result.name)) {
-				$.callGulp(process, '/theme/' + result.name, cb);
-			}
-			else {
-				options.name = result.name;
-				$.inquirer.prompt({
-					type: 'confirm',
-					name: 'createSkin',
-					message: 'There is no theme called "' + result.name + '". Do you want to create it ?'
-				}).then(function(result) {
-					if (result.createSkin) {
-						askConfig(cb)
-					}
-					else {
-						cb();
-					}
-				});
-			}
-		}
-	});
-});
-
-/**
  * Gulp task: install-plugin
  *
  * Ask for the name of the plugin to install
@@ -147,8 +105,89 @@ gulp.task('install-plugin', function() {
  *
  * End process
  */
-gulp.task('closing', function() {
-    return null;
+gulp.task('closing', function(cb) {
+	process.exit()
+});
+
+/**
+ * Gulp task: init
+ *
+ * Working on a theme
+ *
+ * Ask for user what he want to do between:
+ * - Start file watchers
+ * - Update version
+ * - Closing (Never mind)
+ */
+gulp.task('init', function (cb) {
+	var thconf = {
+		properties: {
+			name: {
+				description: 'Enter the name of the theme you\'d like to work on',
+				type: 'string',
+				pattern: /(?!default)/,
+				message: 'Name must be only letters and numbers and different than "default"',
+				required: true
+			}
+		}
+	};
+
+	$.prompt.get(thconf, function (err, result) {
+		if(!err) {
+			if($.dir.dirExist('./theme/' + result.name) && $.dir.dirExist('../skin/' + result.name)) {
+				env.getConfig(result.name);
+				var task_choices = [
+					{
+						type: "list",
+						name: "task",
+						message: "What do you want to do ?",
+						choices: [
+							{
+								name: "Start file watchers",
+								value: "watch"
+							},
+							new $.inquirer.Separator(),
+							{
+								name: "Genera Dist. version",
+								value: "dist"
+							},
+							{
+								name: "Generate Build. version",
+								value: "build"
+							},
+							{
+								name: "Update version",
+								value: "patch"
+							},
+							new $.inquirer.Separator(),
+							{
+								name: "Never mind",
+								value: "closing"
+							}
+						]
+					}
+				];
+				$.inquirer.prompt(task_choices).then(function(result) {
+					// Check if bower is installed
+					runSeq(result.task, cb);
+				});
+			}
+			else {
+				$.inquirer.prompt({
+					type: 'confirm',
+					name: 'createSkin',
+					message: 'There is no theme called "' + result.name + '". Do you want to create it ?'
+				}).then(function(result) {
+					if (result.createSkin) {
+						askConfig(cb)
+					}
+					else {
+						cb();
+					}
+				});
+			}
+		}
+	});
 });
 
 /**
@@ -215,14 +254,17 @@ gulp.task('default', function () {
 			runSeq('bower', result.task);
 		}
 		else {
-			runSeq(result.task);
+			runSeq(result.task, function () {
+				runSeq('default');
+			});
 		}
     });
 });
 
 // Includes tasks
-var compilers = getTask('compile');
-var wartchers = getTask('watch');
 var build = getTask('build');
+var compile = getTask('compile');
+var watch = getTask('watch');
+var theme = getTask('theme');
 var packageManager = require('./gulp-tasks/packages')(gulp, runSeq, $);
-var magix = require('./gulp-tasks/magixcms')(gulp, $, runSeq);
+var magixcms = require('./gulp-tasks/magixcms')(gulp, $, runSeq);

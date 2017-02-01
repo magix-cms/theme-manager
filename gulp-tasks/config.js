@@ -33,15 +33,29 @@ function showConfig(cf) {
 function setConfig(theme, config, cb) {
     var fs = require('fs');
     if(theme) {
-
         fs.writeFile('./theme/' + theme + '/config.json', JSON.stringify(config), 'utf8', function() {
             cb(JSON.parse(fs.readFileSync('./theme/' + theme + '/config.json')));
         });
     }
 }
 
+/**
+ * Set paths relative to the theme directory
+ *
+ * @param {object} config
+ * @param {function} cb
+ */
+function setWorkingDir(config, cb) {
+	var wd = {};
+	Object.keys(config.paths.themePath).map(function(k, i) {
+		wd[k] = './theme/' + config.name + '/' + config.paths.themePath[k];
+	});
+	cb(wd);
+}
+
 module.exports = {
     config: {},
+    workingDir: {},
     getConfig: function (theme) {
         this.config = getConfig(theme);
     },
@@ -49,10 +63,21 @@ module.exports = {
         showConfig(this.config);
     },
     setConfig: function (theme, config, cb) {
+		var $this = this;
         setConfig(theme, config, function(cf) {
-        	this.config = cf;
+			$this.config = cf;
 			cb();
 		});
 
-    }
+    },
+	setWorkingDir: function (cb) {
+    	var $this = this;
+		setWorkingDir(this.config, function(wd) {
+			$this.workingDir = wd;
+
+			if(typeof cb !== 'undefined') {
+				cb();
+			}
+		})
+	}
 };
