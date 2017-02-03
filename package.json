@@ -37,6 +37,7 @@
     "child_process": "^1.0.2",
     "download": "^5.0.3",
     "fs": "*",
+    "gaze": "^1.1.2",
     "gulp": "^3.9.1",
     "gulp-bower": "0.0.13",
     "gulp-clean-css": "^2.3.2",

@@ -18,9 +18,7 @@
   ],
   "license": "GPL",
   "style": "css/style.min.css",
-  "engines": {
-    "Magix CMS": ">=<%= mc_version%>"
-  },
+  "magixcms": "2.7.1",
   "cssProcessor": "less",
   "paths": {
     "bowerDir": "./bower_components",
@@ -32,8 +30,8 @@
       "scss": "css/src/scss",
       "fonts": "css/fonts",
       "img": "img",
-      "vendorsSrc": "js/vendor/src",
-      "vendors": "js/vendor",
+      "vendorsSrc": "js/vendors/src",
+      "vendors": "js/vendors",
       "jsSrc": "js/src",
       "js": "js"
     }

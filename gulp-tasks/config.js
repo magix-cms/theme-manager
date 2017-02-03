@@ -48,7 +48,7 @@ function setConfig(theme, config, cb) {
 function setWorkingDir(config, cb) {
 	var wd = {};
 	Object.keys(config.paths.themePath).map(function(k, i) {
-		wd[k] = './theme/' + config.name + '/' + config.paths.themePath[k];
+		wd[k] = 'theme/' + config.name + '/' + config.paths.themePath[k];
 	});
 	cb(wd);
 }
@@ -58,6 +58,7 @@ module.exports = {
     workingDir: {},
     getConfig: function (theme) {
         this.config = getConfig(theme);
+		this.setWorkingDir();
     },
     showConfig: function () {
         showConfig(this.config);

@@ -11,7 +11,7 @@ module.exports = function (gulp, $, runSeq) {
         var xml     = $.fs.readFileSync('../version.xml');
         var file    = $.cheerio.load(xml, { xmlMode: true });
         mccv = file('version').find('number').text();
-        cb();
+        cb(mccv);
     });
 
     /**

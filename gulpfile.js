@@ -204,6 +204,7 @@ gulp.task('init', function (cb) {
  * - Closing (Never mind)
  */
 gulp.task('default', function () {
+	env.getConfig();
     var task_choices = [
         {
             type: "list",
@@ -243,7 +244,7 @@ gulp.task('default', function () {
                 },
                 {
                     name: "Never mind",
-                    value: "closing"
+                    value: "quit"
                 }
             ]
         }
@@ -254,9 +255,14 @@ gulp.task('default', function () {
 			runSeq('bower', result.task);
 		}
 		else {
-			runSeq(result.task, function () {
-				runSeq('default');
-			});
+			if(result.task === 'quit') {
+				process.exit();
+			}
+			else {
+				runSeq(result.task, function () {
+					runSeq('default');
+				});
+			}
 		}
     });
 });

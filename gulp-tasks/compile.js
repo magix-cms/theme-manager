@@ -2,20 +2,6 @@ module.exports = function (gulp, runSeq, $, env, options) {
 	env.setWorkingDir();
 
     /**
-     * Get theme version
-     */
-    var getVersion = function () {
-        return fs.readFileSync('Version');
-    };
-
-    /**
-     * Get copyright
-     */
-    var getCopyright = function () {
-        return fs.readFileSync('Copyright');
-    };
-
-    /**
      * Gulp task: bootstrap-js
      *
      * Compile bootstrap js files to bootstrap.min.js
@@ -25,7 +11,6 @@ module.exports = function (gulp, runSeq, $, env, options) {
             .pipe($.concat('bootstrap.js'))
             .pipe($.compress())
             .pipe($.rename({ suffix: '.min' }))
-            .pipe($.header(getCopyright(), {version: getVersion()}))
             .pipe(gulp.dest(env.workingDir.vendors))
             .pipe(gulp.dest(env.config.paths.skins + '/' + env.config.name + '/js/vendors'));
     });
@@ -39,7 +24,7 @@ module.exports = function (gulp, runSeq, $, env, options) {
         gulp.src(env.workingDir.vendorsSrc + '/*.js')
             .pipe($.compress())
             .pipe($.rename({ suffix: '.min' }))
-            .pipe($.header(getCopyright(), {version: getVersion()}))
+			.pipe($.header($.fs.readFileSync('Copyright'),{theme: {name: env.config.name, version: env.config.version, magixcms: env.config.magixcms}}))
             .pipe(gulp.dest(env.workingDir.vendors))
             .pipe(gulp.dest(env.config.paths.skins + '/' + env.config.name + '/js/vendors'));
     });
@@ -53,7 +38,7 @@ module.exports = function (gulp, runSeq, $, env, options) {
         gulp.src(env.workingDir.jsSrc + '/*.js')
             .pipe($.compress())
             .pipe($.rename({ suffix: '.min' }))
-            .pipe($.header(getCopyright(), {version: getVersion()}))
+            .pipe($.header($.fs.readFileSync('Copyright'),{theme: {name: env.config.name, version: env.config.version, magixcms: env.config.magixcms}}))
             .pipe(gulp.dest(env.workingDir.js))
             .pipe(gulp.dest(env.config.paths.skins + '/' + env.config.name + '/js'));
     });
@@ -97,7 +82,6 @@ module.exports = function (gulp, runSeq, $, env, options) {
      */
     gulp.task('less', function () {
         var globs, msg;
-        setWorkingDir();
         if (typeof env.config.cssFile == 'undefined') {
             msg = 'Compilation and Minification of all css files';
             globs = [env.workingDir.less + '/style.less', env.workingDir.less + '/mobile.less'];

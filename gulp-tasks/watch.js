@@ -1,7 +1,43 @@
 module.exports = function (gulp, runSeq, $, env, options) {
-	env.setWorkingDir();
+	var Gaze = require('./assets/gaze');
 
-    /**
+	/**
+	 *
+	 * @param globs
+	 * @param ext
+	 * @param task
+	 */
+	function gwatch(globs,task) {
+		// Watch all .ext files/dirs in process.cwd()
+		Gaze(globs, function(err, watcher) {
+			// Get all watched files
+			var watched = this.watched();
+
+			this.on('error', function(err) {
+				console.log(err);
+			});
+
+			// On changed/added/deleted
+			this.on('all', function(event, filepath) {
+				//if(filepath.split('.').pop() !== ext) return false;
+
+				switch (event) {
+					case 'added':
+						watcher.add(filepath);
+						break;
+					case 'deleted':
+						watcher.remove(filepath);
+						break;
+					case 'changed':
+						runSeq(task);
+						break;
+				}
+				console.log(filepath + ' was ' + event);
+			});
+		});
+	}
+
+	/**
      * gulp Task: watch-css
      *
      * File watcher for CSS files
@@ -37,7 +73,22 @@ module.exports = function (gulp, runSeq, $, env, options) {
      */
 	gulp.task('watch-vendors', function () {
 		gulp.watch(env.workingDir.vendors + '/bootstrap/**/*.js', ['bootstrap-js']);
-		gulp.watch(env.workingDir.vendorsSrc + '/**/*.js', ['vendors']);
+		//gulp.watch(env.workingDir.vendorsSrc + '/**/*.js', ['vendors']);
+
+		gwatch([env.workingDir.vendorsSrc, env.workingDir.vendorsSrc +'/**/*.js'],'vendors');
+
+		/*$.fs.watch(env.workingDir.vendorsSrc, function(eventType, filename) {
+			var event = eventType;
+			switch (eventType) {
+				case 'change':
+					break;
+				case 'rename':
+					event = $.fs.existsSync(env.workingDir.vendorsSrc + '/' + filename) ? 'add' : 'delete';
+					break;
+			}
+			console.log(event);
+			console.log(filename);
+		});*/
 	});
 
     /**
@@ -47,6 +98,11 @@ module.exports = function (gulp, runSeq, $, env, options) {
      */
     gulp.task('watch-js', function () {
         gulp.watch(env.workingDir.jsSrc + '/**/*.js', ['js']);
+
+        /*var js = new Gaze(env.workingDir.jsSrc + '/!**!/!*.js');
+		js.on('all', function (error, filepath) {
+			runSeq('js');
+		});*/
     });
 
     // --- All Watchers
@@ -60,7 +116,6 @@ module.exports = function (gulp, runSeq, $, env, options) {
      */
     gulp.task('watch', function (cb) {
         if(env.config.name !== 'default') {
-            setWorkingDir();
             runSeq(['watch-css', 'watch-vendors', 'watch-js']);
         }
         else {
@@ -80,7 +135,6 @@ module.exports = function (gulp, runSeq, $, env, options) {
                 if(!err) {
                     if($.dir.dirExist('./theme/' + result.name) && $.dir.dirExist('../skin/' + result.name)) {
                         env.getConfig(result.name);
-                        setWorkingDir();
                         runSeq(['watch-css', 'watch-vendors', 'watch-js']);
                     }
                     else {

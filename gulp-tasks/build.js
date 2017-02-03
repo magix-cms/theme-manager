@@ -48,12 +48,13 @@ module.exports = function (gulp, runSeq, $, env, options) {
      *
      * Get vendors js and add it to the js directory
      */
-    gulp.task('vendors', function () {
+    gulp.task('vendors-js', function () {
         gulp.src([
             env.config.paths.bowerDir + '/jquery/dist/jquery.min.js',
             env.config.paths.bowerDir + '/fancybox/dist/js/**.*'
         ])
             .pipe(gulp.dest(env.workingDir.js + '/vendors'));
+
         return gulp.src([env.config.paths.bowerDir + '/bootstrap/js/**.*'])
             .pipe(gulp.dest(env.workingDir.js + '/vendors/bootstrap'));
     });
@@ -178,7 +179,7 @@ module.exports = function (gulp, runSeq, $, env, options) {
      * Import theme source files
      */
     gulp.task('import-src', ['comp-fancybox'], function (cb) {
-        runSeq(['vendors', 'css-src', 'fonts', 'images'], 'askFW', cb);
+        runSeq(['vendors-js', 'css-src', 'fonts', 'images'], 'askFW', cb);
     });
 
     /**
