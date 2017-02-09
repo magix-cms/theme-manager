@@ -30,5 +30,9 @@
     "font-awesome": "fontawesome#^4.7.0",
     "jquery": "^3.1.1",
     "fancybox": "^2.1.6"
+  },
+  "devDependencies": {
+    "respond": "^1.4.2",
+    "html5shiv": "^3.7.3"
   }
 }

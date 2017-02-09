@@ -22,7 +22,7 @@ module.exports = function (gulp, runSeq, $, env, options) {
             env.config.paths.bowerDir + '/bootstrap/fonts/**.*',
             env.config.paths.bowerDir + '/font-awesome/fonts/**.*'
         ])
-            .pipe(gulp.dest(env.workingDir.css + '/fonts'));
+            .pipe(gulp.dest(env.workingDir.fonts));
     });
 
     /**
@@ -31,14 +31,17 @@ module.exports = function (gulp, runSeq, $, env, options) {
      * Get less and add it to the css directory
      */
     gulp.task('css-src', function () {
-        gulp.src([env.config.paths.bowerDir + '/fancybox/dist/css/**.*'])
+        gulp.src([env.config.paths.bowerDir + '/fancybox/dist/css/**.css'])
+            //.pipe($.replace(/url\('?(\.\.\/\.\.\/images\/)+(.*)'?\)/g, "url('../img/$2')"))
+            .pipe($.replace('../images/', "../img/"))
+			//.pipe($.replace("''", "'"))
             .pipe(gulp.dest(env.workingDir.css + '/fancybox'));
 
         if(env.config.cssProcessor === 'less') {
             return gulp.src([
                 env.config.paths.bowerDir + '/bootstrap/less/**/**.*',
                 env.config.paths.bowerDir + '/font-awesome/less/**.*'
-            ], { base: env.config.paths.bowerDir})
+            ], {base: env.config.paths.bowerDir})
                 .pipe(gulp.dest(env.workingDir.css + '/'));
         }
     });
@@ -51,12 +54,14 @@ module.exports = function (gulp, runSeq, $, env, options) {
     gulp.task('vendors-js', function () {
         gulp.src([
             env.config.paths.bowerDir + '/jquery/dist/jquery.min.js',
+            env.config.paths.bowerDir + '/html5shiv/dist/html5shiv.min.js',
+            env.config.paths.bowerDir + '/respond/dest/respond.min.js',
             env.config.paths.bowerDir + '/fancybox/dist/js/**.*'
         ])
-            .pipe(gulp.dest(env.workingDir.js + '/vendors'));
+            .pipe(gulp.dest(env.workingDir.vendor));
 
         return gulp.src([env.config.paths.bowerDir + '/bootstrap/js/**.*'])
-            .pipe(gulp.dest(env.workingDir.js + '/vendors/bootstrap'));
+            .pipe(gulp.dest(env.workingDir.vendor + '/bootstrap'));
     });
 
     /**
@@ -67,6 +72,7 @@ module.exports = function (gulp, runSeq, $, env, options) {
     gulp.task('conf-skin', function (cb) {
         if (options.name !== undefined) {
             env.config.name = options.name;
+            env.config.description = options.name + env.config.description;
             if (options.cssProcessor !== undefined) env.config.cssProcessor = options.cssProcessor;
 
             env.setConfig(options.name, env.config, function () {
@@ -84,21 +90,15 @@ module.exports = function (gulp, runSeq, $, env, options) {
         if (options.name !== undefined) {
             if(!($.dir.dirExist('./theme/' + options.name) || $.dir.dirExist('../skin/' + options.name))) {
 
-                gulp.src('./theme/default')
+                gulp.src('./theme/_base')
                     .pipe($.rename('./' + options.name))
                     .pipe(gulp.dest('./theme'))
                     .pipe(gulp.dest(env.config.paths.skins));
 
-                gulp.src('./theme/default/**/*')
+                gulp.src('./theme/_base/**/*')
                     .pipe(gulp.dest('./theme/' + options.name));
 
-                return gulp.src([
-                    env.config.paths.skins + '/default/**/*',
-                    '!' + env.config.paths.skins + '/default/css/**/*',
-                    '!' + env.config.paths.skins + '/default/css',
-                    '!' + env.config.paths.skins + '/default/js/**/*',
-                    '!' + env.config.paths.skins + '/default/js'
-                ])
+                return gulp.src(['./theme/_base/template_files/**/*'])
                     .pipe(gulp.dest(env.config.paths.skins + '/' + options.name));
             } else {
                 $.inquirer.prompt({
@@ -221,9 +221,9 @@ module.exports = function (gulp, runSeq, $, env, options) {
                 name: {
                     description: 'Enter the name of the theme',
                     type: 'string',
-                    pattern: /(?!default)(^[a-zA-Z0-9]+$)/,
+                    pattern: /(?!_base)(^[a-zA-Z0-9]+$)/,
                     default: dfname,
-                    message: 'Name must be only letters and numbers and different than "default"',
+                    message: 'Name must be only letters and numbers and different than "_base"',
                     required: true
                 },
                 cssProcessor: {
@@ -257,8 +257,7 @@ module.exports = function (gulp, runSeq, $, env, options) {
      * it propose to start the file watchers for this one
      */
     gulp.task('build-skin', function(cb) {
-        if (env.config.name !== 'default'
-			&& env.config.name !== 'undefined'
+        if (env.config.name !== 'undefined'
 			&& typeof env.config.name !== 'undefined') {
             options.name = env.config.name;
             options.cssProcessor = env.config.cssProcessor;

@@ -13,6 +13,7 @@ var gulp = require('gulp'),
     });
     $.fs = fs;
     $.path = require('path');
+    $.del = require('del');
     $.prompt = require('prompt');
     $.inquirer = require('inquirer');
     $.cheerio = require('cheerio');
@@ -43,15 +44,6 @@ function getTask(task) {
 gulp.task('bower', function() {
     return bower()
         .pipe(gulp.dest(env.config.paths.bowerDir));
-});
-
-/**
- * Gulp task: config
- *
- * Display current configuration
- */
-gulp.task('config', function () {
-    env.showConfig();
 });
 
 /**
@@ -101,15 +93,6 @@ gulp.task('install-plugin', function() {
 });
 
 /**
- * Gulp task: closing
- *
- * End process
- */
-gulp.task('closing', function(cb) {
-	process.exit()
-});
-
-/**
  * Gulp task: init
  *
  * Working on a theme
@@ -125,8 +108,8 @@ gulp.task('init', function (cb) {
 			name: {
 				description: 'Enter the name of the theme you\'d like to work on',
 				type: 'string',
-				pattern: /(?!default)/,
-				message: 'Name must be only letters and numbers and different than "default"',
+				pattern: /(?!_base)(^[a-zA-Z0-9]+$)/,
+				message: 'Name must be only letters and numbers',
 				required: true
 			}
 		}

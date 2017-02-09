@@ -16,7 +16,7 @@
 // Reset and dependencies
 @import "../../bootstrap/less/normalize";
 @import "../../bootstrap/less/print";
-@import "../../bootstrap/less/glyphicons";
+//@import "../../bootstrap/less/glyphicons";
 
 // Core CSS
 @import "../../bootstrap/less/scaffolding";
@@ -37,12 +37,12 @@
 @import "../../bootstrap/less/breadcrumbs";
 @import "../../bootstrap/less/pagination";
 @import "../../bootstrap/less/pager";
-@import "../../bootstrap/less/labels";
-@import "../../bootstrap/less/badges";
-@import "../../bootstrap/less/jumbotron";
-@import "../../bootstrap/less/thumbnails";
+//@import "../../bootstrap/less/labels";
+//@import "../../bootstrap/less/badges";
+//@import "../../bootstrap/less/jumbotron";
+//@import "../../bootstrap/less/thumbnails";
 @import "../../bootstrap/less/alerts";
-@import "../../bootstrap/less/progress-bars";
+//@import "../../bootstrap/less/progress-bars";
 @import "../../bootstrap/less/media";
 @import "../../bootstrap/less/list-group";
 @import "../../bootstrap/less/panels";
@@ -51,9 +51,9 @@
 @import "../../bootstrap/less/close";
 
 // Components w/ JavaScript
-@import "../../bootstrap/less/modals";
+//@import "../../bootstrap/less/modals";
 @import "../../bootstrap/less/tooltip";
-@import "../../bootstrap/less/popovers";
+//@import "../../bootstrap/less/popovers";
 @import "../../bootstrap/less/carousel";
 
 // Utility classes
@@ -63,7 +63,7 @@
 // Custom Mixins
 @import (reference) "custom/mixins/media-queries";
 @import (reference) "custom/mixins/vendor-prefixes";
-@import "custom/mixins/responsive-utilities";
+//@import "custom/mixins/responsive-utilities";
 @import "custom/mixins/sizes";
 @import "custom/mixins/fonts";
 @import (reference) "custom/mixins/type-mixins";
@@ -77,17 +77,20 @@
 @import "custom/mixins/media";
 
 // Plugins
-@import "plugins/bootstrap-center-columns/bootstrap-center-columns";
+//@import "plugins/bootstrap-center-columns/bootstrap-center-columns";
 @import "plugins/bootstrap-hover-effect/bootstrap-hover-effect";
-@import "../../fancybox/jquery.fancybox.min.css";
+@import (less) "../../fancybox/jquery.fancybox.min.css";
 
 // Theme Rules
 @import "custom/critical/global";
-@import "custom/critical/breadcrumbs";
+@import "custom/critical/toolbar";
 @import "custom/critical/header";
+@import "custom/critical/breadcrumbs";
+@import "custom/critical/carousel";
 @import "custom/critical/navs";
 @import "custom/theme/body";
 @import "custom/theme/affix";
+@import "custom/theme/sidebar";
 @import "custom/theme/home";
 @import "custom/theme/block";
 @import "custom/theme/footer";

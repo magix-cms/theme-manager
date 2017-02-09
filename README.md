@@ -37,7 +37,13 @@ There is actually no official release by now, but we hope to publish one as soon
 - [Theme tasks](#theme-tasks)
     - [Create a theme](#create-a-theme)
     - [Copy a theme](#copy-a-theme)
-    - [Work on a theme (file watchers)](#work-on-a-theme)
+    - [Work on a theme](#work-on-a-theme)
+        - [Start file watchers](#start-file-watchers)
+        - [Compile all type files](#compile-all-type-files)
+        - [Generate Dist](#generate-dist)
+        - [Generate Build](#generate-build)
+        - [Update version](#update-version)
+    - [Standalone file](#standalone-file)
 - [Magix tasks](#magix-tasks)
     - [Install Magix Plugins](#install-magix-plugins)
     - [Check Magix version](#check-magix-version)
@@ -121,6 +127,30 @@ For more information about the file watchers see [Work on a theme](#work-on-a-th
 Coming soon
 
 ### Work on a theme
+
+Explanations are coming soon
+
+#### Start file watchers
+
+Explanations are coming soon
+
+#### Compile all type files
+
+Explanations are coming soon
+
+#### Generate dist
+
+Explanations are coming soon
+
+#### Generate build
+
+Explanations are coming soon
+
+#### Update version
+
+Explanations are coming soon
+
+### Standalone file
 
 Explanations are coming soon
 

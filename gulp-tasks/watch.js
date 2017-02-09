@@ -8,19 +8,14 @@ module.exports = function (gulp, runSeq, $, env, options) {
 	 * @param task
 	 */
 	function gwatch(globs,task) {
-		// Watch all .ext files/dirs in process.cwd()
 		Gaze(globs, function(err, watcher) {
-			// Get all watched files
 			var watched = this.watched();
 
-			this.on('error', function(err) {
-				console.log(err);
-			});
+			this.on('error', function(err) { console.log(err); });
 
 			// On changed/added/deleted
 			this.on('all', function(event, filepath) {
 				//if(filepath.split('.').pop() !== ext) return false;
-
 				switch (event) {
 					case 'added':
 						watcher.add(filepath);
@@ -72,23 +67,8 @@ module.exports = function (gulp, runSeq, $, env, options) {
      * File watcher for JS Vendors files
      */
 	gulp.task('watch-vendors', function () {
-		gulp.watch(env.workingDir.vendors + '/bootstrap/**/*.js', ['bootstrap-js']);
-		//gulp.watch(env.workingDir.vendorsSrc + '/**/*.js', ['vendors']);
-
-		gwatch([env.workingDir.vendorsSrc, env.workingDir.vendorsSrc +'/**/*.js'],'vendors');
-
-		/*$.fs.watch(env.workingDir.vendorsSrc, function(eventType, filename) {
-			var event = eventType;
-			switch (eventType) {
-				case 'change':
-					break;
-				case 'rename':
-					event = $.fs.existsSync(env.workingDir.vendorsSrc + '/' + filename) ? 'add' : 'delete';
-					break;
-			}
-			console.log(event);
-			console.log(filename);
-		});*/
+		gwatch([env.workingDir.vendor + '/bootstrap', env.workingDir.vendor + '/bootstrap/**/*.js'],'bootstrap-js');
+		gwatch([env.workingDir.vendorSrc, env.workingDir.vendorSrc +'/**/*.js'],'vendors');
 	});
 
     /**
@@ -97,12 +77,7 @@ module.exports = function (gulp, runSeq, $, env, options) {
      * File watcher for JS files
      */
     gulp.task('watch-js', function () {
-        gulp.watch(env.workingDir.jsSrc + '/**/*.js', ['js']);
-
-        /*var js = new Gaze(env.workingDir.jsSrc + '/!**!/!*.js');
-		js.on('all', function (error, filepath) {
-			runSeq('js');
-		});*/
+		gwatch([env.workingDir.jsSrc, env.workingDir.jsSrc + '/**/*.js'],'js');
     });
 
     // --- All Watchers
@@ -115,7 +90,7 @@ module.exports = function (gulp, runSeq, $, env, options) {
      * it propose to create it
      */
     gulp.task('watch', function (cb) {
-        if(env.config.name !== 'default') {
+        if(env.config.name !== 'undefined') {
             runSeq(['watch-css', 'watch-vendors', 'watch-js']);
         }
         else {

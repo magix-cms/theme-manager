@@ -2,4 +2,5 @@
 /gulp-tasks/assets/gaze/node_modules/
 /bower_components/
 /theme/*
+!/theme/_base
 !/theme/default

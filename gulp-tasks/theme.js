@@ -2,14 +2,98 @@ module.exports = function (gulp, runSeq, $, env, options) {
 	env.setWorkingDir();
 
 	/**
+	 * Gulp task: clean:dist
+	 *
+	 * Remove dist files
+	 */
+	gulp.task('clean:dist', function () {
+		return $.del([
+			env.config.paths.skins + '/' + env.config.name + '/css/*.css',
+			env.config.paths.skins + '/' + env.config.name + '/js/**/*.js',
+			env.config.paths.skins + '/' + env.config.name + '/img/fancybox/**/*'
+		],{force: true});
+	});
+
+	/**
 	 * Gulp task: dist
 	 */
-	gulp.task('dist', function () {});
+	gulp.task('dist', ['clean:dist', 'compile:all'], function () {
+		gulp.src([
+			'./theme/' + env.config.name + '/css/*.css'
+		])
+			.pipe(gulp.dest(env.config.paths.skins + '/' + env.config.name + '/css'));
+
+		gulp.src([
+			'./theme/' + env.config.name + '/fonts/*'
+		])
+			.pipe(gulp.dest(env.config.paths.skins + '/' + env.config.name + '/fonts'));
+
+		gulp.src([
+			'./theme/' + env.config.name + '/img/**/*'
+		])
+			.pipe(gulp.dest(env.config.paths.skins + '/' + env.config.name + '/img'));
+
+		return gulp.src([
+			'./theme/' + env.config.name + '/js/**/*.js',
+			'!./theme/' + env.config.name + '/js/src',
+			'!./theme/' + env.config.name + '/js/src/*',
+			'!./theme/' + env.config.name + '/js/vendor/src',
+			'!./theme/' + env.config.name + '/js/vendor/src/*',
+			'!./theme/' + env.config.name + '/js/vendor/bootstrap',
+			'!./theme/' + env.config.name + '/js/vendor/bootstrap/*'
+		])
+			.pipe(gulp.dest(env.config.paths.skins + '/' + env.config.name + '/js'));
+	});
+
+	/**
+	 * Gulp task: clean:build
+	 *
+	 * Remove dist files
+	 */
+	gulp.task('clean:build', function () {
+		return $.del([
+			env.config.paths.skins + '/' + env.config.name + '/css/**/*',
+			env.config.paths.skins + '/' + env.config.name + '/js/**/*',
+			env.config.paths.skins + '/' + env.config.name + '/img/fancybox/**/*',
+			env.config.paths.skins + '/' + env.config.name + '/gulpfile.js',
+			env.config.paths.skins + '/' + env.config.name + '/config.json',
+			env.config.paths.skins + '/' + env.config.name + '/package.json',
+			env.config.paths.skins + '/' + env.config.name + '/Copyright'
+		],{force: true});
+	});
 
 	/**
 	 * Gulp task: build
 	 */
-	gulp.task('build', function () {});
+	gulp.task('build', ['clean:build', 'compile:all'], function () {
+		gulp.src([
+			'./theme/' + env.config.name + '/css/**/*'
+		])
+			.pipe(gulp.dest(env.config.paths.skins + '/' + env.config.name + '/css'));
+
+		gulp.src([
+			'./theme/' + env.config.name + '/fonts/*'
+		])
+			.pipe(gulp.dest(env.config.paths.skins + '/' + env.config.name + '/fonts'));
+
+		gulp.src([
+			'./theme/' + env.config.name + '/img/**/*'
+		])
+			.pipe(gulp.dest(env.config.paths.skins + '/' + env.config.name + '/img'));
+
+		gulp.src([
+			'./theme/' + env.config.name + '/js/**/*'
+		])
+			.pipe(gulp.dest(env.config.paths.skins + '/' + env.config.name + '/js'));
+
+		return gulp.src([
+			'./theme/' + env.config.name + '/gulpfile.js',
+			'./theme/' + env.config.name + '/config.json',
+			'./theme/' + env.config.name + '/package.json',
+			'./theme/' + env.config.name + '/Copyright'
+		])
+			.pipe(gulp.dest(env.config.paths.skins + '/' + env.config.name));
+	});
 
 	/**
 	 * Update version.

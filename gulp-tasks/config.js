@@ -9,7 +9,7 @@
 function getConfig(theme) {
     var fs = require('fs');
     if(!theme || (theme && !fs.existsSync('./theme/' + theme))) {
-        return JSON.parse(fs.readFileSync('./theme/default/config.json'));
+        return JSON.parse(fs.readFileSync('./theme/_base/config.json'));
     }
     else {
         return JSON.parse(fs.readFileSync('./theme/' + theme + '/config.json'));
